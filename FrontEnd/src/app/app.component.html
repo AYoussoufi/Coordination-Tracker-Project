@@ -1,0 +1,11 @@
+<div class="btncontainer" (click)="onClick()">
+  <button 
+  [disabled]="isOn"
+  [ngStyle]="isOn ? {'opacity':'0.5','pointer-events': 'none'} : {}"
+  >Start Traveling Animation</button></div>
+<div class="map-container" style="height: 87vh;">
+  <div class="map-frame" style="height: 100%;">
+    <div id="map" style="height: 100%;"></div>
+  </div>
+</div>
+

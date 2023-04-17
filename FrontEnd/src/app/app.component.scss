@@ -1,0 +1,26 @@
+body{
+    padding: 0px;
+    margin: 0px;
+}
+.btncontainer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    button{
+        margin: 30px;
+        font-size: 1.2em;
+        color: rgb(67, 172, 67);
+        background-color: transparent;
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+        padding: 10px;
+        border: none;
+        cursor: pointer;
+        &:hover{
+            background-color: rgb(67, 172, 67);
+            color: white;
+        }
+        &:active{
+            box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+        }
+    }
+}
