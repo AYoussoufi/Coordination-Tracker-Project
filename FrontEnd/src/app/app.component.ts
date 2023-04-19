@@ -1,4 +1,4 @@
-import { Component,OnInit, ChangeDetectorRef, OnChanges, SimpleChanges } from '@angular/core';
+import { Component,OnInit, OnChanges } from '@angular/core';
 import { HttprequestService } from './service/httprequest.service';
 import * as L from 'leaflet';
 
@@ -17,13 +17,12 @@ export class AppComponent implements OnInit,OnChanges{
   protected isOn:boolean = false;
   
 
-  constructor(private httprequestService:HttprequestService,private  cd: ChangeDetectorRef) { }
+  constructor(private httprequestService:HttprequestService) { }
 
   ngOnInit(): void {
     this.httprequestService.sendPostRequest("coordination","").subscribe(
       data=>{
       this.coordination = data;
-      console.log(this.coordination);
       this.initMap();
     },
     error=>{
@@ -44,11 +43,11 @@ export class AppComponent implements OnInit,OnChanges{
         this.pointingX,
         this.pointingY
       ],
-      zoom: 15
+      zoom: 18
     });
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 18,
+      maxZoom: 13,
       minZoom: 3,
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(this.map);
@@ -62,29 +61,35 @@ export class AppComponent implements OnInit,OnChanges{
 
     this.marker = L.marker([ this.pointingX,this.pointingY],{ icon: greenIcon }).addTo(this.map);
 
+    L.marker([ this.coordination[399][0],this.coordination[399][1]],{ icon: greenIcon }).addTo(this.map).bindPopup(this.coordination[399][0]+" "+this.coordination[399][1]).openPopup();
+    L.marker([ this.coordination[0][0],this.coordination[0][1]],{ icon: greenIcon }).addTo(this.map).bindPopup(this.coordination[0][0]+" "+this.coordination[0][1]).openPopup();
+
+    //Its possible to add a api to use this coordination to show up better info but its better to keep it safer maybe the api wont work the time you try to communicate with the api 
+
     const directionsLatLng = this.coordination.map(coord => L.latLng(coord[0], coord[1]));
     
-    // Create a polygon object from the array of directions
     const polyline = L.polyline(directionsLatLng, {
       color: '#E74C33',
       fillColor: '#f03',
       fillOpacity: 0.5
     });
     
-    // Add the polygon to the map
     polyline.addTo(this.map);
+    const bounds = L.latLngBounds([[this.coordination[0][0],this.coordination[0][1]], [this.coordination[399][0],this.coordination[399][1]]]);
+    this.map.fitBounds(bounds);
   }
 
 
   protected onClick(): void{
-    this.isOn = true;
+    this.isOn = !this.isOn;
     console.log("start")
     this.coordination.forEach((data, index) => {
       setTimeout(() => {
         this.map.setView([data[0], data[1]]);
         this.marker.setLatLng([data[0], data[1]]);
         console.log(index)
-        this.isOn = index == 399 ? false : true;
+        this.isOn = index == this.coordination.length-1 ? !this.isOn : true;
+        console.log(this.isOn)
       }, index * 50);
     });
     console.log("finish")
